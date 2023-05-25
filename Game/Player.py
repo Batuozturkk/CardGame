@@ -9,11 +9,7 @@ class PlayerClass:
         self.manapool = 1
         self.turn_ended = False
         self.wonCount = 0
-        self.fieldOneSum = 0
-        self.fieldTwoSum = 0
-        self.fieldThreeSum = 0
         self.fieldCardCount = [0, 0, 0]
-        self.client = client
 
     # Create a method that draws a card from the deck
     def draw(self):

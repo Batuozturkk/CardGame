@@ -73,10 +73,11 @@ def handle_client(client_socket, client_number):
                             print("Player", clients.index(client_socket) + 1, "played card index:", card_index)
                             
                             # Update the player's mana
-                            current_player.mana -= card.mana
+                            current_player.manapool -= card.mana
                             
                             # Send the name of the played card to the client
                             response = "Played " + card.name
+
                         else:
                             # Insufficient mana to play the card
                             response = "Insufficient mana to play the card"
@@ -87,23 +88,25 @@ def handle_client(client_socket, client_number):
                     client_socket.send(response.encode('utf-8'))
 
                 elif data.lower() == "fields":
-                    # Prepare the response string
-                    response = "\n Fields: \n"
-
-                    # Iterate over each field in current_player's fields
+                    response = "\nFields:\n"
+                    
                     for field_index, field in enumerate(current_player.fields):
-                        response += "\t" + "Field " + str(field_index + 1) + "\n"
-                        for card in field[1]:  # Access the second element (list of cards) in the field sublist
-                            response += "\t\t" + card.name + "| Mana: " + str(card.mana) + "| Attack: " + str(card.attack) + "\n"
-
-                    # Send fields total attack power
-                    field_powers = Game.calculate_field_powers(clients.index(client_socket),  )
-                    response += "Field Powers:\n"
-                    for client_name, powers in field_powers.items():
-                        response += f"{client_name} - {', '.join(str(power) for power in powers)}\n"
-
+                        response += f"\tField {field_index + 1}\n"
+                        for card in field[1]:
+                            response += f"\t\t{card.name} | Mana: {card.mana} | Attack: {card.attack}\n"
+                    
                     # Send the response to the client
                     client_socket.send(response.encode('utf-8'))
+
+                ##########TESTING##########
+                elif data.lower() == "addmana":
+                    response = "Mana added"
+                    current_player.manapool += 1
+                    client_socket.send(response.encode('utf-8'))
+
+                elif data.lower() == "closeserver":
+                    break
+                ##########TESTING##########
 
                 elif data.lower() == "hand":
                     response = "\n Hand:"
@@ -146,39 +149,6 @@ def handle_client(client_socket, client_number):
 def switch_turns():
     global current_turn  # Declare current_turn as a global variable
     current_turn = 1 - current_turn  # Switch turns
-
-
-def start_game():
-    while len(clients) < 2:
-        pass
-
-    print("Game started!")
-    while True:
-        current_client = clients[current_turn]
-        other_client = clients[1 - current_turn]
-
-        # Allow the current client to take its turn
-        print("Current turn: Client", current_turn + 1)
-        current_client.send("Your turn".encode('utf-8'))
-        data = current_client.recv(1024).decode('utf-8')
-        if data:
-            # Process the received data based on game logic
-            # This is where you would implement your game logic
-            # ...
-            if data.lower() == "end":
-                # End the current player's turn
-                response = "Turn ended"
-                current_client.send(response.encode('utf-8'))
-                switch_turns()  # Switch turns
-            else:
-                # Perform other game logic based on the received data
-                # ...
-                response = "Response from server"
-                other_client.send(response.encode('utf-8'))
-
-
-        # Switch turns
-        current_turn = 1 - current_turn
 
 # Function to accept and handle client connections
 def accept_clients():
