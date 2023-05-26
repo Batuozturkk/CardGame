@@ -9,6 +9,7 @@ class PlayerClass:
         self.manapool = 1
         self.turn_ended = False
         self.wonCount = 0
+        self.fieldSum = [0, 0, 0]
         self.fieldCardCount = [0, 0, 0]
 
     # Create a method that draws a card from the deck
@@ -19,5 +20,6 @@ class PlayerClass:
     # Create a method that plays a card from the hand
     def play(self, card, fieldIndex):
         if card in self.hand and 0 <= fieldIndex < len(self.fields):
-            self.fields[fieldIndex][1].append(self.hand.pop(self.hand.index(card)))
+            self.fields[fieldIndex][1].append(
+                self.hand.pop(self.hand.index(card)))
             self.fieldCardCount[fieldIndex] += 1

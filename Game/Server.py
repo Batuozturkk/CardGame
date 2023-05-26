@@ -98,16 +98,6 @@ def handle_client(client_socket, client_number):
                     # Send the response to the client
                     client_socket.send(response.encode('utf-8'))
 
-                ##########TESTING##########
-                elif data.lower() == "addmana":
-                    response = "Mana added"
-                    current_player.manapool += 1
-                    client_socket.send(response.encode('utf-8'))
-
-                elif data.lower() == "closeserver":
-                    break
-                ##########TESTING##########
-
                 elif data.lower() == "hand":
                     response = "\n Hand:"
                     for card in current_player.hand:
